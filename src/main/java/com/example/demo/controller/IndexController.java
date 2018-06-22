@@ -1,6 +1,6 @@
 package com.example.demo.controller;
 
-import com.example.demo.com.example.utils.HttpClientManager;
+import com.example.demo.utils.HttpClientManager;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 

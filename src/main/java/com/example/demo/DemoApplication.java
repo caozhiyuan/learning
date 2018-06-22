@@ -1,6 +1,6 @@
 package com.example.demo;
 
-import com.example.demo.com.example.utils.HttpClientManager;
+import com.example.demo.utils.HttpClientManager;
 import org.apache.http.HttpResponse;
 import org.apache.http.concurrent.FutureCallback;
 import org.springframework.boot.SpringApplication;

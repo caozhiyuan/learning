@@ -1,4 +1,4 @@
-package com.example.demo.com.example.utils;
+package com.example.demo.utils;
 
 import org.apache.http.Consts;
 import org.apache.http.HttpHost;
