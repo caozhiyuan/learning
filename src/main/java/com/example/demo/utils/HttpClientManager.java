@@ -38,13 +38,16 @@ import org.apache.http.util.EntityUtils;
 
 import javax.net.ssl.SSLContext;
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.List;
 import java.nio.charset.CodingErrorAction;
 import java.security.KeyManagementException;
 import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
 import java.security.UnrecoverableKeyException;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Future;
 
 public class HttpClientManager {
@@ -168,57 +171,69 @@ public class HttpClientManager {
         closeableHttpAsyncClient.start();
     }
 
-    public String getAsync(String url) throws Exception {
-        Future<HttpResponse> task = exeAsyncReq(url, false, null, null,null);
-        HttpResponse httpResponse = task.get();
-        String result = EntityUtils.toString(httpResponse.getEntity(), "utf-8");
-        return result;
+    public CompletableFuture<String> getAsync(String url) throws Exception {
+        CompletableFuture<String> completableFuture = new CompletableFuture();
+        try {
+            execute(url, false, null, null, new FutureCallback<HttpResponse>() {
+                @Override
+                public void completed(HttpResponse httpResponse) {
+                    try {
+                        String result = EntityUtils.toString(httpResponse.getEntity(), "utf-8");
+                        completableFuture.complete(result);
+                    } catch (IOException e) {
+                        completableFuture.completeExceptionally(e);
+                    }
+                }
+
+                @Override
+                public void failed(Exception e) {
+                    completableFuture.completeExceptionally(e);
+                }
+
+                @Override
+                public void cancelled() {
+                    completableFuture.cancel(true);
+                }
+            });
+        } catch (Exception e) {
+            completableFuture.completeExceptionally(e);
+        }
+        return completableFuture;
     }
 
-    public Future<HttpResponse> getTestAsync(String url,FutureCallback<HttpResponse> callback) throws Exception {
-        return  exeAsyncReq(url, false, null, null,callback);
-    }
-
-    Future<HttpResponse> exeAsyncReq(String baseUrl,
+    Future<HttpResponse> execute(String baseUrl,
                                      boolean isPost,
                                      List<BasicNameValuePair> urlParams,
                                      List<BasicNameValuePair> postBody,
-                                     FutureCallback<HttpResponse> callback) throws Exception {
+                                     FutureCallback<HttpResponse> callback) throws IOException, URISyntaxException {
 
         if (baseUrl == null) {
-            throw new Exception("missing base url");
+            throw new IllegalArgumentException("missing base url");
         }
 
         HttpRequestBase httpMethod;
         CloseableHttpAsyncClient hc = closeableHttpAsyncClient;
 
-        try {
-            if (isPost) {
-                httpMethod = new HttpPost(baseUrl);
-                if (null != postBody) {
-                    UrlEncodedFormEntity entity = new UrlEncodedFormEntity(postBody, "UTF-8");
-                    ((HttpPost) httpMethod).setEntity(entity);
-                }
-
-                if (null != urlParams) {
-                    String getUrl = EntityUtils.toString(new UrlEncodedFormEntity(urlParams));
-                    httpMethod.setURI(new URI(httpMethod.getURI().toString() + "?" + getUrl));
-                }
-
-            } else {
-                httpMethod = new HttpGet(baseUrl);
-                if (null != urlParams) {
-                    String getUrl = EntityUtils.toString(new UrlEncodedFormEntity(urlParams));
-                    httpMethod.setURI(new URI(httpMethod.getURI().toString() + "?" + getUrl));
-                }
+        if (isPost) {
+            httpMethod = new HttpPost(baseUrl);
+            if (null != postBody) {
+                UrlEncodedFormEntity entity = new UrlEncodedFormEntity(postBody, "UTF-8");
+                ((HttpPost) httpMethod).setEntity(entity);
             }
 
-            return hc.execute(httpMethod, callback);
+            if (null != urlParams) {
+                String getUrl = EntityUtils.toString(new UrlEncodedFormEntity(urlParams));
+                httpMethod.setURI(new URI(httpMethod.getURI().toString() + "?" + getUrl));
+            }
 
-        } catch (Exception e) {
-            e.printStackTrace();
-            throw e;
+        } else {
+            httpMethod = new HttpGet(baseUrl);
+            if (null != urlParams) {
+                String getUrl = EntityUtils.toString(new UrlEncodedFormEntity(urlParams));
+                httpMethod.setURI(new URI(httpMethod.getURI().toString() + "?" + getUrl));
+            }
         }
+        return hc.execute(httpMethod, callback);
     }
 
     public void close() throws IOException {

@@ -11,7 +11,7 @@ public class IndexController {
 
 	@RequestMapping("/benchmark")
 	public String benchmark() throws Exception {
-		return httpClientManager.getAsync("http://10.1.62.66:5500/plaintext");
+		return httpClientManager.getAsync("http://10.1.62.66:5500/plaintext").get();
 	}
 
 	@RequestMapping("/benchmark2")

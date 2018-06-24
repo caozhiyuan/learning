@@ -24,21 +24,9 @@ public class HttpClientManagerTest {
             int count = 10000;
             CountDownLatch countDownLatch = new CountDownLatch(count);
             for (int i = 0; i < count; i++) {
-                httpClientManager.getTestAsync("http://10.1.62.66:5500/plaintext", new FutureCallback<HttpResponse>() {
-                    @Override
-                    public void completed(HttpResponse httpResponse) {
-                        countDownLatch.countDown();
-                    }
-
-                    @Override
-                    public void failed(Exception e) {
-                        countDownLatch.countDown();
-                    }
-
-                    @Override
-                    public void cancelled() {
-                        countDownLatch.countDown();
-                    }
+                CompletableFuture<String> async = httpClientManager.getAsync("http://10.1.62.66:5500/plaintext");
+                async.thenRun(() -> {
+                    countDownLatch.countDown();
                 });
             }
             countDownLatch.await();
@@ -63,7 +51,7 @@ public class HttpClientManagerTest {
             for (int i = 0; i < count; i++) {
                 fixedThreadPool.execute(() -> {
                     try {
-                        String str = httpClientManager.getAsync("http://10.1.62.66:5500/plaintext");
+                        String str = httpClientManager.getAsync("http://10.1.62.66:5500/plaintext").get();
                     } catch (Exception e) {
                         e.printStackTrace();
                     } finally {
