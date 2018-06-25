@@ -1,7 +1,5 @@
 package com.example.demo;
 
-import com.alibaba.druid.filter.Filter;
-import com.alibaba.druid.filter.logging.Slf4jLogFilter;
 import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.support.http.StatViewServlet;
 import com.alibaba.druid.support.http.WebStatFilter;
@@ -15,8 +13,6 @@ import org.springframework.context.annotation.Configuration;
 
 import javax.sql.DataSource;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.List;
 
 @Configuration
 public class DruidConfig {
