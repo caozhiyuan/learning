@@ -1,9 +1,22 @@
 spring:
   datasource:
+    type: com.alibaba.druid.pool.DruidDataSource
     url: jdbc:mysql://test4.suiyi:3306/world?useSSL=false
+    driver-class-name: com.mysql.cj.jdbc.Driver
     username: root
     password: Windows2000!
-    driver-class-name: com.mysql.cj.jdbc.Driver
+    minIdle: 5
+    validationQuery: SELECT 'x'
+    initialSize: 5
+    maxWait: 60000
+    filters: stat,wall,log4j
+    logSlowSql: true
+    testOnBorrow: false
+    testWhileIdle: true
+    minEvictableIdleTimeMillis: 300000
+    timeBetweenEvictionRunsMillis: 60000
+    testOnReturn: false
+    maxActive: 20
   jpa:
     hibernate:
       ddl-auto: update

@@ -26,8 +26,7 @@ public class TestController {
 
     @RequestMapping("/test2")
     @ResponseBody
-    public Test test2() throws Exception {
-        Optional<Test> optest = testDal.findById(1L);
-        return optest.get();
+    public RespEntity test2() throws Exception {
+        return new RespEntity(RespCode.SUCCESS, "1111");
     }
 }
