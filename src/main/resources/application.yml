@@ -9,7 +9,7 @@ spring:
     validationQuery: SELECT 'x'
     initialSize: 50
     maxWait: 60000
-    filters: stat,wall,log4j
+    filters: stat,wall,slf4j
     logSlowSql: true
     testOnBorrow: false
     testWhileIdle: true
