@@ -5,9 +5,9 @@ spring:
     driver-class-name: com.mysql.cj.jdbc.Driver
     username: root
     password: Windows2000!
-    minIdle: 5
+    minIdle: 50
     validationQuery: SELECT 'x'
-    initialSize: 5
+    initialSize: 50
     maxWait: 60000
     filters: stat,wall,log4j
     logSlowSql: true
@@ -16,8 +16,8 @@ spring:
     minEvictableIdleTimeMillis: 300000
     timeBetweenEvictionRunsMillis: 60000
     testOnReturn: false
-    maxActive: 20
+    maxActive: 100
   jpa:
     hibernate:
       ddl-auto: update
-    show-sql: true
+    show-sql: false
