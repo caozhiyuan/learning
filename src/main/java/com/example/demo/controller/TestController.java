@@ -25,6 +25,12 @@ public class TestController {
     @RequestMapping(value = "/test2", method = RequestMethod.GET)
     @ResponseBody
     public RespEntity test2() throws Exception {
+        return new RespEntity(testService.getTest2ById(1L));
+    }
+
+    @RequestMapping(value = "/test3", method = RequestMethod.GET)
+    @ResponseBody
+    public RespEntity test3() throws Exception {
         return new RespEntity("1111");
     }
 

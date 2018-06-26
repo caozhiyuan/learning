@@ -31,34 +31,36 @@ public class CacheAspect {
 
     @Around("webAspect()")
     public Object redisCache(ProceedingJoinPoint pjp) throws Throwable {
-        //得到类名、方法名和参数
-        String redisResult = "";
+        String redisResult;
         String className = pjp.getTarget().getClass().getName();
         String methodName = pjp.getSignature().getName();
         Object[] args = pjp.getArgs();
-        //根据类名，方法名和参数生成key
-        String key = genKey(className,methodName,args);
-        logger.info("生成的key[{}]",key);
-        //得到被代理的方法
+
+        String key = genKey(className, methodName, args);
+
         Signature signature = pjp.getSignature();
-        if(!(signature instanceof MethodSignature)){
-            throw  new IllegalArgumentException();
+        if (!(signature instanceof MethodSignature)) {
+            throw new IllegalArgumentException();
         }
         MethodSignature methodSignature = (MethodSignature) signature;
-        Method method = pjp.getTarget().getClass().getMethod(methodSignature.getName(),methodSignature.getParameterTypes());
-        int cacheTime = method.getAnnotation(Cache.class).cacheTime();
-        Object result;
-        redisResult = cacheService.get(key);
-        if(redisResult == "" || redisResult == null) {
-            result = pjp.proceed(args);
-            redisResult = JSON.toJSONString(result);
-            cacheService.set(key,redisResult,cacheTime);
-        } else{
-            //得到被代理方法的返回值类型
-            Class returnType = method.getReturnType();
-            result = JSON.parseObject(redisResult,returnType);
+        Method method = pjp.getTarget().getClass().getMethod(methodSignature.getName(), methodSignature.getParameterTypes());
+        Cache cache = method.getAnnotation(Cache.class);
+        if (cache != null) {
+            int cacheTime = cache.cacheTime();
+            Object result;
+            redisResult = cacheService.get(key);
+            if (redisResult == "" || redisResult == null) {
+                result = pjp.proceed(args);
+                redisResult = JSON.toJSONString(result);
+                cacheService.set(key, redisResult, cacheTime);
+            } else {
+                //得到被代理方法的返回值类型
+                Class returnType = method.getReturnType();
+                result = JSON.parseObject(redisResult, returnType);
+            }
+            return result;
         }
-        return result;
+        return pjp.proceed(args);
     }
 
     private String genKey(String className, String methodName, Object[] args) {

@@ -2,10 +2,12 @@ package com.example.demo.domain;
 
 import com.example.demo.exception.BizException;
 
+import java.io.Serializable;
+
 /**
  * Created by admin on 2018-06-23.
  */
-public class RespEntity {
+public class RespEntity implements Serializable {
     private int code;
     private String msg;
 

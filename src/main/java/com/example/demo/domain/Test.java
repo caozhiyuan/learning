@@ -1,10 +1,11 @@
 package com.example.demo.domain;
 
 import javax.persistence.*;
+import java.io.Serializable;
 
 @Entity
 @Table(name="city")
-public class Test {
+public class Test implements Serializable {
     private static final long serialVersionUID = 1L;
 
     public Long getId() {

@@ -5,6 +5,7 @@ import com.example.demo.dao.TestDal;
 import com.example.demo.domain.Test;
 import com.example.demo.util.HttpClientManager;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
@@ -31,6 +32,14 @@ public class TestService {
     public Test getTestById(long  id){
         Optional<Test> optest = testDal.findById(id);
         return optest.get();
+    }
+
+    @Cacheable("Tests")
+    public Test getTest2ById(long  id) {
+        Test test = new Test();
+        test.setId(id);
+        test.setName("test2");
+        return test;
     }
 
     @Async
