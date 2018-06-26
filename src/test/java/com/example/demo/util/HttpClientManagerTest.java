@@ -1,7 +1,5 @@
-package com.example.demo.utils;
+package com.example.demo.util;
 
-import org.apache.http.HttpResponse;
-import org.apache.http.concurrent.FutureCallback;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.boot.test.context.SpringBootTest;

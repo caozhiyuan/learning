@@ -1,6 +1,6 @@
 package com.example.demo.domain;
 
-import com.example.demo.exceptions.BizException;
+import com.example.demo.exception.BizException;
 
 /**
  * Created by admin on 2018-06-23.

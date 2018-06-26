@@ -1,19 +1,21 @@
 package com.example.demo.controller;
 
 import com.example.demo.domain.RespEntity;
-import com.example.demo.exceptions.BizException;
-import com.example.demo.utils.HttpClientManager;
+import com.example.demo.exception.BizException;
+import com.example.demo.service.TestService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 public class IndexController {
 
-	static HttpClientManager httpClientManager = new HttpClientManager();
+	@Autowired
+	public TestService testService;
 
 	@RequestMapping("/benchmark")
 	public RespEntity benchmark() throws Exception {
-		return new RespEntity(httpClientManager.getAsync("http://10.1.62.66:5500/plaintext").get());
+		return new RespEntity(testService.benchmark());
 	}
 
 	@RequestMapping("/benchmark2")

@@ -2,7 +2,7 @@ package com.example.demo.config;
 
 import com.example.demo.domain.RespCode;
 import com.example.demo.domain.RespEntity;
-import com.example.demo.exceptions.BizException;
+import com.example.demo.exception.BizException;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
@@ -11,9 +11,6 @@ import org.springframework.web.servlet.NoHandlerFoundException;
 
 import javax.servlet.http.HttpServletRequest;
 
-/**
- * Created by admin on 2018-06-26.
- */
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
