@@ -1,17 +1,14 @@
 package com.example.demo.service;
 
 import com.example.demo.dao.TestDal;
-import com.example.demo.domain.RespEntity;
 import com.example.demo.domain.Test;
 import com.example.demo.util.HttpClientManager;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Async;
-import org.springframework.scheduling.annotation.AsyncResult;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.Future;
 
 /**
  * Created by admin on 2018-06-26.
