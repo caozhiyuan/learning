@@ -26,7 +26,7 @@ public class CacheAspect {
     @Autowired
     private CacheService cacheService;
 
-    @Pointcut("execution(public * com.example.demo.service..*.*(..))")
+    @Pointcut("execution(public * com.example.demo.service..*.*(..)) || execution(public * com.example.demo.dao..*.*(..))")
     public void webAspect(){}
 
     @Around("webAspect()")
@@ -38,7 +38,19 @@ public class CacheAspect {
         }
         Object[] args = pjp.getArgs();
         MethodSignature methodSignature = (MethodSignature) signature;
-        Method method = pjp.getTarget().getClass().getMethod(methodSignature.getName(), methodSignature.getParameterTypes());
+        Class clz= pjp.getTarget().getClass();
+        Method method;
+        if(clz.getName().startsWith("com.sun.proxy")){
+            Class[] interfaces = clz.getInterfaces();
+            if(interfaces!=null && interfaces.length>0){
+                method = interfaces[0].getDeclaredMethod(methodSignature.getName(), methodSignature.getParameterTypes());
+            }else{
+                method = clz.getDeclaredMethod(methodSignature.getName(), methodSignature.getParameterTypes());
+            }
+        }
+        else{
+            method = clz.getDeclaredMethod(methodSignature.getName(), methodSignature.getParameterTypes());
+        }
         Cache cache = method.getAnnotation(Cache.class);
         if (cache != null) {
 

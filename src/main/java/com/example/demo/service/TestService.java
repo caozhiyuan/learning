@@ -28,13 +28,10 @@ public class TestService {
         return httpClientManager.getAsync("http://10.1.62.66:5500/plaintext").get();
     }
 
-    @Cache(type = Test.class, cacheTime = 100 )
     public Test getTestById(long  id){
-        Optional<Test> optest = testDal.findById(id);
-        return optest.get();
+        return testDal.getOne(id);
     }
 
-    @Cacheable("Tests")
     public Test getTest2ById(long  id) {
         Test test = new Test();
         test.setId(id);
