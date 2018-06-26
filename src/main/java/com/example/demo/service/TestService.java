@@ -34,10 +34,8 @@ public class TestService {
     @Async
     public CompletableFuture<Boolean> sendMail() throws InterruptedException {
         CompletableFuture ts = new CompletableFuture();
-        System.out.println("sending mail..");
         Thread.sleep(50);
         ts.complete(true);
-        System.out.println("sending mail completed");
         return ts;
     }
 }
