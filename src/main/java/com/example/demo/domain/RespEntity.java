@@ -1,5 +1,7 @@
 package com.example.demo.domain;
 
+import com.example.demo.exceptions.BizException;
+
 /**
  * Created by admin on 2018-06-23.
  */
@@ -38,9 +40,14 @@ public class RespEntity {
         this.msg = respCode.getMsg();
     }
 
-    public RespEntity(RespCode respCode, Object data) {
-        this(respCode);
+    public RespEntity(Object data) {
+        this.code = RespCode.SUCCESS.getCode();
         this.data = data;
+    }
+
+    public RespEntity(BizException ex) {
+        this.code = ex.getCode();
+        this.msg = ex.getMsg();
     }
 }
 

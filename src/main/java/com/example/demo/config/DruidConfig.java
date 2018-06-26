@@ -1,4 +1,4 @@
-package com.example.demo;
+package com.example.demo.config;
 
 import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.support.http.StatViewServlet;

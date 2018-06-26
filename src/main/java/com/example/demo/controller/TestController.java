@@ -21,12 +21,12 @@ public class TestController {
     @ResponseBody
     public RespEntity test() throws Exception {
         Optional<Test> optest = testDal.findById(1L);
-        return new RespEntity(RespCode.SUCCESS, optest.get());
+        return new RespEntity(optest.get());
     }
 
     @RequestMapping("/test2")
     @ResponseBody
     public RespEntity test2() throws Exception {
-        return new RespEntity(RespCode.SUCCESS, "1111");
+        return new RespEntity("1111");
     }
 }
