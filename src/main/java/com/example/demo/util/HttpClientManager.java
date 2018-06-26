@@ -14,7 +14,6 @@ import org.apache.http.config.ConnectionConfig;
 import org.apache.http.config.Lookup;
 import org.apache.http.config.Registry;
 import org.apache.http.config.RegistryBuilder;
-import org.apache.http.conn.ssl.SSLContexts;
 import org.apache.http.impl.auth.*;
 import org.apache.http.impl.client.BasicCookieStore;
 import org.apache.http.impl.client.BasicCredentialsProvider;
@@ -38,7 +37,6 @@ import org.apache.http.util.EntityUtils;
 
 import javax.net.ssl.SSLContext;
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.List;
@@ -91,7 +89,7 @@ public class HttpClientManager {
                     .setConnectTimeout(connectTimeout)
                     .setSocketTimeout(socketTimeout).build();
 
-            SSLContext sslcontext = SSLContexts.createDefault();
+            SSLContext sslcontext = org.apache.http.ssl.SSLContexts.createDefault();
 
             UsernamePasswordCredentials credentials = new UsernamePasswordCredentials(
                     username, password);
