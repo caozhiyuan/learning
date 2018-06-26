@@ -3,6 +3,7 @@ import com.example.demo.domain.RespEntity;
 import com.example.demo.service.TestService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -15,19 +16,19 @@ public class TestController {
     @Autowired
     public TestService testService;
 
-    @RequestMapping("/test")
+    @RequestMapping(value = "/test", method = RequestMethod.GET)
     @ResponseBody
     public RespEntity test() throws Exception {
         return new RespEntity(testService.getTestById(1L));
     }
 
-    @RequestMapping("/test2")
+    @RequestMapping(value = "/test2", method = RequestMethod.GET)
     @ResponseBody
     public RespEntity test2() throws Exception {
         return new RespEntity("1111");
     }
 
-    @RequestMapping("/async_test")
+    @RequestMapping(value = "/async_test", method = RequestMethod.GET)
     @ResponseBody
     public RespEntity asynctest() throws Exception {
         CompletableFuture<Boolean> b1 = testService.sendMail();
