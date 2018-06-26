@@ -34,7 +34,7 @@ public class TestService {
     @Async
     public CompletableFuture<Boolean> sendMail() throws InterruptedException {
         CompletableFuture ts = new CompletableFuture();
-        Thread.sleep(50);
+        Thread.sleep(5);
         ts.complete(true);
         return ts;
     }
