@@ -17,7 +17,12 @@ spring:
     timeBetweenEvictionRunsMillis: 60000
     testOnReturn: false
     maxActive: 100
+
   jpa:
     hibernate:
       ddl-auto: update
     show-sql: false
+
+  redis:
+      host: 127.0.0.1
+      port: 6379
