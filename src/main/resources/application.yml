@@ -24,5 +24,12 @@ spring:
     show-sql: false
 
   redis:
-      host: 127.0.0.1
-      port: 6379
+    host: 10.1.62.66
+    port: 6379
+    jedis:
+     pool:
+        max-active: 8
+        max-wait: 1
+        max-idle: 8
+        min-idle: 0
+    timeout: 1000

@@ -1,10 +1,11 @@
-package com.example.demo.cache.redis;
+package com.example.demo.cache;
 
 /**
  * Created by admin on 2018-06-26.
  */
 import com.alibaba.fastjson.JSON;
 import java.lang.reflect.Method;
+
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.Signature;
 import org.aspectj.lang.annotation.Around;
@@ -18,12 +19,12 @@ import org.springframework.stereotype.Component;
 
 @Aspect
 @Component
-public class RedisCacheAspect {
+public class CacheAspect {
 
     private Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @Autowired
-    private JedisService jedisService;
+    private CacheService cacheService;
 
     @Pointcut("execution(public * com.example.demo.service..*.*(..))")
     public void webAspect(){}
@@ -45,20 +46,14 @@ public class RedisCacheAspect {
         }
         MethodSignature methodSignature = (MethodSignature) signature;
         Method method = pjp.getTarget().getClass().getMethod(methodSignature.getName(),methodSignature.getParameterTypes());
-        //得到被代理的方法上的注解
-        Class modelType = method.getAnnotation(RedisCache.class).type();
-        int cacheTime = method.getAnnotation(RedisCache.class).cacheTime();
-        Object result = null;
-        if(!jedisService.exists(key)) {
-            logger.info("缓存未命中");
-            //缓存不存在，则调用原方法，并将结果放入缓存中
+        int cacheTime = method.getAnnotation(Cache.class).cacheTime();
+        Object result;
+        redisResult = cacheService.get(key);
+        if(redisResult == "" || redisResult == null) {
             result = pjp.proceed(args);
             redisResult = JSON.toJSONString(result);
-            jedisService.set(key,redisResult,cacheTime);
+            cacheService.set(key,redisResult,cacheTime);
         } else{
-            //缓存命中
-            logger.info("缓存命中");
-            redisResult = jedisService.get(key);
             //得到被代理方法的返回值类型
             Class returnType = method.getReturnType();
             result = JSON.parseObject(redisResult,returnType);

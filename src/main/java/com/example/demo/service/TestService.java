@@ -1,6 +1,6 @@
 package com.example.demo.service;
 
-import com.example.demo.cache.redis.RedisCache;
+import com.example.demo.cache.Cache;
 import com.example.demo.dao.TestDal;
 import com.example.demo.domain.Test;
 import com.example.demo.util.HttpClientManager;
@@ -27,7 +27,7 @@ public class TestService {
         return httpClientManager.getAsync("http://10.1.62.66:5500/plaintext").get();
     }
 
-    @RedisCache(type = Test.class, cacheTime = 100 )
+    @Cache(type = Test.class, cacheTime = 100 )
     public Test getTestById(long  id){
         Optional<Test> optest = testDal.findById(id);
         return optest.get();

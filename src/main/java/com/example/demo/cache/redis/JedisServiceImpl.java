@@ -1,64 +1,44 @@
 package com.example.demo.cache.redis;
 
-import com.alibaba.fastjson.JSON;
-import java.util.Map;
+import com.example.demo.cache.CacheService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
-import redis.clients.jedis.Jedis;
+
+import java.util.concurrent.TimeUnit;
 
 /**
  * Created by admin on 2018-06-26.
  */
 @Service
-public class JedisServiceImpl implements JedisService {
+public class JedisServiceImpl implements CacheService {
 
     @Autowired
-    private Jedis jedis;
+    private StringRedisTemplate redisTemplate;
 
     @Override
-    public boolean exists(String key) {
-        boolean flag = false;
-        flag = jedis.exists(key);
-        return flag;
-    }
-
-    @Override
-    public String set(String key, String value, int seconds) {
-        String responseResult = jedis.set(key,value);
-        if(seconds!=0)
-            jedis.expire(key,seconds);
-        return responseResult;
-    }
-
-    @Override
-    public String getSet(String key, String value, int seconds) {
-        String jedisClusterSet = jedis.getSet(key, value);
-        jedis.expire(key,seconds);
-        return jedisClusterSet;
+    public void set(String key, String value, int seconds) {
+        redisTemplate.opsForValue().set(key,value);
+        if(seconds!=0){
+            redisTemplate.expire(key,seconds , TimeUnit.SECONDS);
+        }
     }
 
     @Override
     public String get(String key) {
-        String str = jedis.get(key);
+        String str = redisTemplate.opsForValue().get(key);
         return str;
     }
 
     @Override
     public void delKey(String key) {
-        jedis.del(key);
-    }
-
-    @Override
-    public Map<String, Object> getMapData(String key) {
-        String str = jedis.get(key);
-        Map<String,Object> map = JSON.parseObject(str, Map.class);
-        return map;
+        redisTemplate.delete(key);
     }
 
     @Override
     public boolean lock(String key, int seconds) {
-        if(jedis.incr(key) == 1 ) {
-            jedis.expire(key,seconds);
+        if(redisTemplate.opsForValue().increment(key,1) == 1 ) {
+            redisTemplate.expire(key,seconds , TimeUnit.SECONDS);
             return false;
         }
         return true;
@@ -66,11 +46,6 @@ public class JedisServiceImpl implements JedisService {
 
     @Override
     public void unlock(String key) {
-        jedis.del(key);
-    }
-
-    @Override
-    public String getLocakValue(String key) {
-        return jedis.get(key);
+        redisTemplate.delete(key);
     }
 }
