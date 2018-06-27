@@ -34,6 +34,12 @@ public class TestController {
         return new RespEntity("1111");
     }
 
+    @RequestMapping(value = "/test4", method = RequestMethod.GET)
+    @ResponseBody
+    public RespEntity test4() throws Exception {
+        return new RespEntity(testService.getCityById(1));
+    }
+
     @RequestMapping(value = "/async_test", method = RequestMethod.GET)
     @ResponseBody
     public RespEntity asynctest() throws Exception {

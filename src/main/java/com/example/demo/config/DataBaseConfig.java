@@ -3,21 +3,29 @@ package com.example.demo.config;
 import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.support.http.StatViewServlet;
 import com.alibaba.druid.support.http.WebStatFilter;
+import org.apache.ibatis.session.SqlSessionFactory;
+import org.mybatis.spring.SqlSessionFactoryBean;
+import org.mybatis.spring.annotation.MapperScan;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.boot.web.servlet.ServletRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Primary;
+import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
+import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 
 import javax.sql.DataSource;
 import java.sql.SQLException;
 
 @Configuration
-public class DruidConfig {
+@MapperScan(basePackages = "com.example.demo.dao", sqlSessionFactoryRef = "masterSqlSessionFactory")
+public class DataBaseConfig {
 
-    private Logger logger = LoggerFactory.getLogger(DruidConfig.class);
+    private Logger logger = LoggerFactory.getLogger(DataBaseConfig.class);
 
     @Value("${spring.datasource.url}")
     private String dbUrl;
@@ -88,7 +96,8 @@ public class DruidConfig {
         return filterRegistrationBean;
     }
 
-    @Bean
+    @Bean(name = "masterDataSource")
+    @Primary
     public DataSource druidDataSource() {
         DruidDataSource datasource = new DruidDataSource();
         datasource.setUrl(dbUrl);
@@ -113,4 +122,20 @@ public class DruidConfig {
         return datasource;
     }
 
+    @Bean(name = "masterTransactionManager")
+    @Primary
+    public DataSourceTransactionManager masterTransactionManager() {
+        return new DataSourceTransactionManager(druidDataSource());
+    }
+
+    @Bean(name = "masterSqlSessionFactory")
+    @Primary
+    public SqlSessionFactory masterSqlSessionFactory(@Qualifier("masterDataSource") DataSource masterDataSource)
+            throws Exception {
+        final SqlSessionFactoryBean sessionFactory = new SqlSessionFactoryBean();
+        sessionFactory.setDataSource(masterDataSource);
+        sessionFactory.setMapperLocations(new PathMatchingResourcePatternResolver()
+                .getResources("classpath:mapper/*.xml"));
+        return sessionFactory.getObject();
+    }
 }

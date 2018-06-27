@@ -1,15 +1,14 @@
 package com.example.demo.service;
 
-import com.example.demo.cache.Cache;
-import com.example.demo.dao.TestDal;
+import com.example.demo.dao.CityMapper;
+import com.example.demo.dao.TestRepository;
+import com.example.demo.domain.City;
 import com.example.demo.domain.Test;
 import com.example.demo.util.HttpClientManager;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cache.annotation.Cacheable;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
-import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 
 /**
@@ -22,10 +21,17 @@ public class TestService {
     public HttpClientManager httpClientManager;
 
     @Autowired
-    public TestDal testDal;
+    public TestRepository testDal;
+
+    @Autowired
+    private CityMapper cityMapper;
 
     public String benchmark() throws Exception {
         return httpClientManager.getAsync("http://10.1.62.66:5500/plaintext").get();
+    }
+
+    public City getCityById(int  id){
+        return cityMapper.selectByPrimaryKey(id);
     }
 
     public Test getTestById(long  id){
