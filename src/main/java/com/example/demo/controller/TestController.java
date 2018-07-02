@@ -31,6 +31,7 @@ public class TestController {
     @RequestMapping(value = "/test3", method = RequestMethod.GET)
     @ResponseBody
     public RespEntity test3() throws Exception {
+        Thread.sleep(80);
         return new RespEntity("1111");
     }
 

@@ -1,10 +1,10 @@
 spring:
   datasource:
     type: com.alibaba.druid.pool.DruidDataSource
-    url: jdbc:mysql://test4.suiyi:3306/world?useSSL=false
+    url: jdbc:mysql://127.0.0.1:3306/test?useSSL=false&serverTimezone=UTC
     driver-class-name: com.mysql.cj.jdbc.Driver
     username: root
-    password: Windows2000!
+    password: 123456
     minIdle: 50
     validationQuery: SELECT 'x'
     initialSize: 50
@@ -24,7 +24,7 @@ spring:
     show-sql: false
 
   redis:
-    host: 10.1.62.66
+    host: 127.0.0.1
     port: 6379
     jedis:
      pool:
